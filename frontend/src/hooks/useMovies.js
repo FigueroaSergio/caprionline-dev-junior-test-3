@@ -17,13 +17,15 @@ export const useMovies = () => {
     search: "",
     order_by: ORDER_BY.RELEASE_DATE,
     order: ORDER_TYPE.DESC,
+    genres: [],
   });
 
   const fetchMovies = (order_by = ORDER_BY.ID, order = ORDER_TYPE.DESC) => {
     setLoading(true);
 
     return fetch(
-      `http://localhost:8000/movies?order_by=${order_by}&order=${order}`
+      `http://localhost:8000/movies?order_by=${order_by}&order=${order}
+      ${form.genres.length >= 0 ? `&genres=${form.genres.join(",")}` : ""}`
     )
       .then((response) => response.json())
       .then((data) => {
