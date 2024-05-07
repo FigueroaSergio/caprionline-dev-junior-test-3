@@ -24,20 +24,27 @@ class MovieRepository extends ServiceEntityRepository
     //    /**
     //     * @return Movie[] Returns an array of Movie objects
     //     */
-    public function findByOrder($orderBy, $orderType): array
+    public function findCustom($genres, $orderBy, $orderType)
     {
-        $dictOrder = array(
-            'id' => 'id',
-            'releaseDate' => 'releaseDate',
-            'rating' => 'rating'
-        );
-        $order = $dictOrder[$orderBy];
-        $query = 'm.' . $order;
-        return $this->createQueryBuilder('m')
-            ->orderBy($query, $orderType)
-            ->getQuery()
-            ->getResult()
-        ;
+        $qb = $this->createQueryBuilder('m');
+        if ($genres) {
+            $this->findByGenre($genres, $qb);
+        }
+        if ($orderBy) {
+            $this->findByOrder($orderBy, $orderType, $qb);
+        }
+        return $qb->getQuery()->getResult();
+
+    }
+    public function findByOrder($orderBy, $orderType, $queryModifier)
+    {
+        $query = 'm.' . $orderBy;
+        $queryModifier->orderBy($query, $orderType);
+    }
+    public function findByGenre($genres, $queryModifier)
+    {
+        $genres_arr = preg_split("/\,/", $genres);
+        $queryModifier->join('m.movieGenres', 'mg')->where('mg.genre IN (:genres)')->setParameter('genres', $genres_arr);
     }
 
     //    public function findOneBySomeField($value): ?Movie

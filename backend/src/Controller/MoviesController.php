@@ -24,16 +24,16 @@ class MoviesController extends AbstractController
         $validOrders = ['id', 'releaseDate', 'rating']; // Assuming these are some of the fields you can order by
 
         $orderType = $request->query->get('order', 'DESC'); // ordine order by DESC if order parameter is not provided
-        $validOrder = ['ASC', 'DESC',]; // Assuming these are some of the fields you can order by
+        $genres = $request->query->get('genres', null);
+        $validOrder = ['ASC', 'DESC']; // Assuming these are some of the fields you can order by
 
         if (!in_array($orderType, $validOrder)) {
             $orderType = 'DESC';
         }
         if (!in_array($orderBy, $validOrders)) {
-            $movies = $this->movieRepository->findAll();
-        } else {
-            $movies = $this->movieRepository->findByOrder($orderBy, $orderType);
+            $orderBy = null;
         }
+        $movies = $this->movieRepository->findCustom($genres, $orderBy, $orderType);
 
         $data = $this->serializer->serialize($movies, "json", ["groups" => "default"]);
 
