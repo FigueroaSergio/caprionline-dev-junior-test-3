@@ -1,29 +1,14 @@
-import React, { useEffect, useState } from 'react';
 import { Button, Rating, Spinner } from 'flowbite-react';
+import { useMovies } from './hooks/useMovies';
+import { SearchBar } from './components/SearchBar';
 
-const App = props => {
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchMovies = () => {
-    setLoading(true);
-
-    return fetch('http://localhost:8000/movies')
-      .then(response => response.json())
-      .then(data => {
-        setMovies(data);
-        setLoading(false);
-      });
-  }
-
-  useEffect(() => {
-    fetchMovies();
-  }, []);
+const App = (props) => {
+  const {movies,loading,onChange,form}=useMovies()
 
   return (
     <Layout>
       <Heading />
-
+      <SearchBar form={form} onChange={onChange}></SearchBar>
       <MovieList loading={loading}>
         {movies.map((item, key) => (
           <MovieItem key={key} {...item} />

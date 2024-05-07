@@ -24,17 +24,21 @@ class MovieRepository extends ServiceEntityRepository
     //    /**
     //     * @return Movie[] Returns an array of Movie objects
     //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('m.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findByOrder($orderBy, $orderType): array
+    {
+        $dictOrder = array(
+            'id' => 'id',
+            'releaseDate' => 'releaseDate',
+            'rating' => 'rating'
+        );
+        $order = $dictOrder[$orderBy];
+        $query = 'm.' . $order;
+        return $this->createQueryBuilder('m')
+            ->orderBy($query, $orderType)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     //    public function findOneBySomeField($value): ?Movie
     //    {
